@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Test</title>
+    <style>
+        .stat-card {
+            padding: 20px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dashboard Analytics Test</h1>
+    
+    <div class="stat-card">
+        <div class="stat-number" id="totalUsers">0</div>
+        <div class="stat-label">Total Users</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-number" id="totalCourses">0</div>
+        <div class="stat-label">Total Courses</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-number" id="totalEnrollments">0</div>
+        <div class="stat-label">Total Enrollments</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-number" id="totalRevenue">$0</div>
+        <div class="stat-label">Total Revenue</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-number" id="totalReviews">0</div>
+        <div class="stat-label">Total Reviews</div>
+    </div>
+
+    <script>
+        console.log('Test page loaded');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM ready - loading test data');
+            
+            // Set test values
+            document.getElementById('totalUsers').textContent = '245';
+            document.getElementById('totalCourses').textContent = '18';  
+            document.getElementById('totalEnrollments').textContent = '342';
+            document.getElementById('totalRevenue').textContent = '$24,580';
+            document.getElementById('totalReviews').textContent = '156';
+            
+            console.log('Test data loaded successfully');
+        });
+    </script>
+</body>
+</html>

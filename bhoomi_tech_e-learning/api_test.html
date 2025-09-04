@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bhoomi Tech E-Learning API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background-color: #0056b3; }
+        #token { font-family: monospace; word-break: break-all; font-size: 12px; }
+        textarea { width: 100%; height: 150px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Bhoomi Tech E-Learning API Test</h1>
+        
+        <div class="test-result info">
+            <strong>Base URL:</strong> <span id="baseUrl">http://localhost:8000</span>
+        </div>
+        
+        <div>
+            <button onclick="testRoot()">Test Root Endpoint</button>
+            <button onclick="testDocs()">Open API Docs</button>
+            <button onclick="registerAdmin()">Register Admin</button>
+            <button onclick="loginAdmin()">Login Admin</button>
+            <button onclick="testDashboard()">Test Dashboard</button>
+            <button onclick="createSampleData()">Create Sample Data</button>
+        </div>
+        
+        <div id="token" style="display: none;">
+            <strong>Auth Token:</strong> <span id="authToken"></span>
+        </div>
+        
+        <div id="results"></div>
+        
+        <h3>Raw Response:</h3>
+        <textarea id="rawResponse" readonly></textarea>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:8000';
+        let authToken = '';
+
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = message;
+            resultsDiv.appendChild(resultDiv);
+            
+            // Scroll to bottom
+            resultDiv.scrollIntoView();
+        }
+
+        function setRawResponse(data) {
+            document.getElementById('rawResponse').value = JSON.stringify(data, null, 2);
+        }
+
+        async function testRoot() {
+            try {
+                addResult('Testing root endpoint...', 'info');
+                const response = await fetch(`${BASE_URL}/`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult(`✅ Root endpoint working! Status: ${response.status}`, 'success');
+                    addResult(`Message: ${data.message}`, 'success');
+                } else {
+                    addResult(`❌ Root endpoint failed! Status: ${response.status}`, 'error');
+                }
+                setRawResponse(data);
+            } catch (error) {
+                addResult(`❌ Error: ${error.message}`, 'error');
+                addResult('Make sure the server is running on http://localhost:8000', 'error');
+            }
+        }
+
+        function testDocs() {
+            window.open(`${BASE_URL}/docs`, '_blank');
+            addResult('📖 Opening API documentation in new tab...', 'info');
+        }
+
+        async function registerAdmin() {
+            try {
+                addResult('Registering admin user...', 'info');
+                
+                const adminData = {
+                    name: "Admin User",
+                    email: "admin@bhoomi.com",
+                    password: "admin123",
+                    role: "admin"
+                };
+
+                const response = await fetch(`${BASE_URL}/users/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(adminData)
+                });
+
+                const data = await response.json();
+                setRawResponse(data);
+
+                if (response.ok) {
+                    addResult('✅ Admin user created successfully!', 'success');
+                } else if (response.status === 400) {
+                    addResult('ℹ️ Admin user might already exist', 'info');
+                } else {
+                    addResult(`❌ Admin registration failed: ${response.status}`, 'error');
+                    addResult(`Error: ${data.detail || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Registration error: ${error.message}`, 'error');
+            }
+        }
+
+        async function loginAdmin() {
+            try {
+                addResult('Logging in admin user...', 'info');
+                
+                const loginData = {
+                    email: "admin@bhoomi.com",
+                    password: "admin123"
+                };
+
+                const response = await fetch(`${BASE_URL}/users/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                const data = await response.json();
+                setRawResponse(data);
+
+                if (response.ok) {
+                    authToken = data.access_token;
+                    document.getElementById('authToken').textContent = authToken;
+                    document.getElementById('token').style.display = 'block';
+                    addResult('✅ Admin login successful!', 'success');
+                    addResult(`Token: ${authToken.substring(0, 50)}...`, 'success');
+                } else {
+                    addResult(`❌ Admin login failed: ${response.status}`, 'error');
+                    addResult(`Error: ${data.detail || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Login error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testDashboard() {
+            if (!authToken) {
+                addResult('❌ Please login first to get auth token', 'error');
+                return;
+            }
+
+            try {
+                addResult('Testing admin dashboard...', 'info');
+                
+                const response = await fetch(`${BASE_URL}/admin/dashboard`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const data = await response.json();
+                setRawResponse(data);
+
+                if (response.ok) {
+                    addResult('✅ Admin dashboard loaded successfully!', 'success');
+                    const stats = data.stats || {};
+                    addResult(`📊 Users: ${stats.total_users || 0}, Courses: ${stats.total_courses || 0}, Enrollments: ${stats.total_enrollments || 0}`, 'success');
+                } else {
+                    addResult(`❌ Dashboard failed: ${response.status}`, 'error');
+                    addResult(`Error: ${data.detail || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Dashboard error: ${error.message}`, 'error');
+            }
+        }
+
+        async function createSampleData() {
+            if (!authToken) {
+                addResult('❌ Please login first to get auth token', 'error');
+                return;
+            }
+
+            try {
+                addResult('Creating sample users...', 'info');
+                
+                const sampleUsers = [
+                    {name: "John Instructor", email: "instructor@bhoomi.com", password: "instructor123", role: "instructor"},
+                    {name: "Alice Student", email: "alice@example.com", password: "student123", role: "student"},
+                    {name: "Bob Student", email: "bob@example.com", password: "student123", role: "student"}
+                ];
+
+                for (let user of sampleUsers) {
+                    const response = await fetch(`${BASE_URL}/admin/users`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(user)
+                    });
+
+                    if (response.status === 201) {
+                        addResult(`✅ Created user: ${user.name}`, 'success');
+                    } else if (response.status === 400) {
+                        addResult(`ℹ️ User ${user.name} might already exist`, 'info');
+                    } else {
+                        const errorData = await response.json();
+                        addResult(`❌ Failed to create ${user.name}: ${errorData.detail}`, 'error');
+                    }
+                }
+
+                addResult('Sample user creation completed!', 'success');
+                
+                // Test dashboard again to see updated stats
+                setTimeout(testDashboard, 1000);
+                
+            } catch (error) {
+                addResult(`❌ Sample data creation error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-test root endpoint on load
+        window.onload = function() {
+            addResult('🚀 Welcome to Bhoomi Tech E-Learning API Test Page', 'info');
+            addResult('Click "Test Root Endpoint" to verify server connectivity', 'info');
+        };
+    </script>
+</body>
+</html>

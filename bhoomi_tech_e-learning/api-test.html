@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Connection Test</title>
+</head>
+<body>
+    <h1>Testing API Connection</h1>
+    <button onclick="testAPI()">Test API Root</button>
+    <button onclick="registerTestAdmin()">Register Admin</button>
+    <button onclick="testLogin()">Test Login</button>
+    
+    <div id="results" style="margin-top: 20px; font-family: monospace;"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        
+        function log(message) {
+            document.getElementById('results').innerHTML += message + '<br>';
+            console.log(message);
+        }
+        
+        async function testAPI() {
+            log('Testing API root...');
+            try {
+                const response = await fetch(`${API_BASE}/`);
+                const data = await response.json();
+                log(`✅ API Root: ${JSON.stringify(data)}`);
+            } catch (error) {
+                log(`❌ API Error: ${error.message}`);
+            }
+        }
+        
+        async function registerTestAdmin() {
+            log('Registering admin user...');
+            try {
+                const response = await fetch(`${API_BASE}/users/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: "Admin User",
+                        email: "admin@bhoomi.com", 
+                        password: "admin123",
+                        role: "admin"
+                    })
+                });
+                const data = await response.json();
+                log(`✅ Register: ${response.status} - ${JSON.stringify(data)}`);
+            } catch (error) {
+                log(`❌ Register Error: ${error.message}`);
+            }
+        }
+        
+        async function testLogin() {
+            log('Testing login...');
+            try {
+                const response = await fetch(`${API_BASE}/users/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: "admin@bhoomi.com",
+                        password: "admin123"
+                    })
+                });
+                const data = await response.json();
+                log(`✅ Login: ${response.status} - ${JSON.stringify(data)}`);
+            } catch (error) {
+                log(`❌ Login Error: ${error.message}`);
+            }
+        }
+        
+        // Auto-test on load
+        window.onload = function() {
+            testAPI();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        button {
+            background: #007cba;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #005a87;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .error {
+            background: #ffe6e6;
+            color: #cc0000;
+            border-left: 4px solid #cc0000;
+        }
+        .success {
+            background: #e6ffe6;
+            color: #008000;
+            border-left: 4px solid #008000;
+        }
+        .loading {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+        .status {
+            font-weight: bold;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .form-section {
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 FastAPI Connection Diagnostic</h1>
+        
+        <div class="status" id="server-status">
+            🔍 Checking server connection...
+        </div>
+        
+        <div class="test-section">
+            <h2>1. Server Connection Test</h2>
+            <p>Testing if the FastAPI server is reachable</p>
+            <button onclick="testServerConnection()" id="test-connection-btn">Test Server Connection</button>
+            <div id="connection-result" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. Admin API Test</h2>
+            <p>Testing the admin endpoints</p>
+            <button onclick="testAdminEndpoint()" id="test-admin-btn">Test Admin API</button>
+            <div id="admin-result" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. Course Creation Test</h2>
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="course-title">Course Title:</label>
+                    <input type="text" id="course-title" value="Test Course" required>
+                </div>
+                <div class="form-group">
+                    <label for="course-description">Description:</label>
+                    <textarea id="course-description" required>This is a test course to verify API functionality</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="instructor-id">Instructor ID:</label>
+                    <input type="text" id="instructor-id" value="test_instructor_123">
+                </div>
+                <div class="form-group">
+                    <label for="course-price">Price:</label>
+                    <input type="number" id="course-price" value="99.99" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="duration">Duration (minutes):</label>
+                    <input type="number" id="duration" value="120">
+                </div>
+            </div>
+            <button onclick="testCourseCreation()" id="test-course-btn">Create Test Course</button>
+            <div id="course-result" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>4. Course Listing Test</h2>
+            <button onclick="testCourseListing()" id="test-list-btn">List Courses</button>
+            <div id="list-result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:8001';
+
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `result ${type}`;
+        }
+
+        function showLoading(elementId, message = 'Loading...') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = 'result loading';
+        }
+
+        function updateServerStatus(status, message) {
+            const element = document.getElementById('server-status');
+            element.textContent = `${status} ${message}`;
+            element.className = `status ${status.includes('✅') ? 'success' : 'error'}`;
+        }
+
+        // Auto-test server connection on page load
+        window.onload = function() {
+            testServerConnection();
+        };
+
+        async function testServerConnection() {
+            const btn = document.getElementById('test-connection-btn');
+            btn.disabled = true;
+            showLoading('connection-result', 'Testing server connection...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('connection-result', `✅ Success!\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+                    updateServerStatus('✅', 'Server is running and reachable');
+                } else {
+                    showResult('connection-result', `❌ Server responded with error\nStatus: ${response.status}\nStatus Text: ${response.statusText}`, 'error');
+                    updateServerStatus('❌', `Server error: ${response.status}`);
+                }
+            } catch (error) {
+                showResult('connection-result', `❌ Connection failed\nError: ${error.message}\n\nPossible causes:\n1. Server is not running\n2. Wrong port number\n3. CORS issues\n4. Network problems`, 'error');
+                updateServerStatus('❌', 'Cannot connect to server');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function testAdminEndpoint() {
+            const btn = document.getElementById('test-admin-btn');
+            btn.disabled = true;
+            showLoading('admin-result', 'Testing admin API...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/test`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('admin-result', `✅ Admin API Working!\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    showResult('admin-result', `❌ Admin API Error\nStatus: ${response.status}\nResponse: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                showResult('admin-result', `❌ Admin API Test Failed\nError: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function testCourseCreation() {
+            const btn = document.getElementById('test-course-btn');
+            btn.disabled = true;
+            showLoading('course-result', 'Creating test course...');
+            
+            const courseData = {
+                title: document.getElementById('course-title').value,
+                description: document.getElementById('course-description').value,
+                instructor_id: document.getElementById('instructor-id').value,
+                price: parseFloat(document.getElementById('course-price').value) || 0,
+                duration_minutes: parseInt(document.getElementById('duration').value) || 60
+            };
+            
+            try {
+                console.log('Sending course data:', courseData);
+                
+                const response = await fetch(`${API_BASE_URL}/admin/courses`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    mode: 'cors',
+                    body: JSON.stringify(courseData)
+                });
+                
+                const responseText = await response.text();
+                console.log('Raw response:', responseText);
+                
+                if (response.ok) {
+                    let data;
+                    try {
+                        data = JSON.parse(responseText);
+                    } catch (e) {
+                        data = responseText;
+                    }
+                    showResult('course-result', `✅ Course Created Successfully!\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult('course-result', `❌ Course Creation Failed\nStatus: ${response.status}\nResponse: ${responseText}`, 'error');
+                }
+            } catch (error) {
+                showResult('course-result', `❌ Course Creation Error\nError: ${error.message}\nStack: ${error.stack}`, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function testCourseListing() {
+            const btn = document.getElementById('test-list-btn');
+            btn.disabled = true;
+            showLoading('list-result', 'Loading courses...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/courses`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('list-result', `✅ Courses Loaded Successfully!\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    showResult('list-result', `❌ Failed to Load Courses\nStatus: ${response.status}\nResponse: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                showResult('list-result', `❌ Course Listing Error\nError: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhoomi Tech E-Learning - Setup Complete</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+        }
+        .logo {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+        .status {
+            display: flex;
+            justify-content: space-between;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .instructions {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        .code {
+            background: #e9ecef;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎓</div>
+        <h1>Bhoomi Tech E-Learning Admin Panel</h1>
+        <p>Your admin panel is ready to use!</p>
+        
+        <div class="status success">
+            <span>✅ Backend API</span>
+            <span>Running on http://localhost:8000</span>
+        </div>
+        
+        <div class="status success">
+            <span>✅ Admin Frontend</span>
+            <span>Ready to launch</span>
+        </div>
+        
+        <div class="instructions">
+            <h3>🚀 Quick Start:</h3>
+            <ol>
+                <li>Make sure your backend server is running:
+                    <div class="code">cd bhoomi_tech_e-learning/src && python -m uvicorn main:app --reload</div>
+                </li>
+                <li>Open the admin panel (click button below)</li>
+                <li>Login with default admin credentials:
+                    <div class="code">Email: admin@bhoomi.com<br>Password: admin123</div>
+                </li>
+                <li>If admin doesn't exist, register first, then login</li>
+            </ol>
+        </div>
+        
+        <a href="index.html" class="btn">🎯 Open Admin Panel</a>
+        <a href="http://localhost:8000/docs" target="_blank" class="btn">📚 API Documentation</a>
+        
+        <div style="margin-top: 2rem; color: #666; font-size: 0.9rem;">
+            <p><strong>Features Available:</strong></p>
+            <p>📊 Dashboard Analytics • 👥 User Management • 📚 Course Management • 🎓 Enrollment Tracking</p>
+        </div>
+    </div>
+</body>
+</html>

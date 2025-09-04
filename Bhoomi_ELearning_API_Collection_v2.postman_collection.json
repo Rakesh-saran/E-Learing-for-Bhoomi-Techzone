@@ -1,0 +1,1094 @@
+{
+	"info": {
+		"_postman_id": "bhoomi-elearning-api-v2",
+		"name": "Bhoomi Tech E-Learning API Collection v2",
+		"description": "Complete API collection for testing Bhoomi Tech E-Learning platform with avatar and course update features",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Basic Endpoints",
+			"item": [
+				{
+					"name": "Root Endpoint",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Home Feed",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/home-feed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"home-feed"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. User Authentication",
+			"item": [
+				{
+					"name": "Register User (Student)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('studentId', response.id);",
+									"    console.log('Student ID saved: ' + response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Student\",\n  \"email\": \"john@student.com\",\n  \"password\": \"password123\",\n  \"role\": \"student\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					}
+				},
+				{
+					"name": "Register User (Instructor)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('instructorId', response.id);",
+									"    console.log('Instructor ID saved: ' + response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Jane Instructor\",\n  \"email\": \"jane@instructor.com\",\n  \"password\": \"password123\",\n  \"role\": \"instructor\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					}
+				},
+				{
+					"name": "Login User (Student)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('studentToken', response.access_token);",
+									"    console.log('Student token saved');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john@student.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					}
+				},
+				{
+					"name": "Login User (Instructor)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('instructorToken', response.access_token);",
+									"    console.log('Instructor token saved');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"jane@instructor.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. User Management",
+			"item": [
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{studentToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{studentToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Update User Profile 🆕",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{studentToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Updated Student\",\n  \"email\": \"john.updated@student.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/{{studentId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"{{studentId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Upload User Avatar 🆕",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{studentToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/users/{{studentId}}/avatar",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"{{studentId}}",
+								"avatar"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete User Avatar 🆕",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{studentToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/{{studentId}}/avatar",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"{{studentId}}",
+								"avatar"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Course Management",
+			"item": [
+				{
+					"name": "Get All Courses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Course",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('courseId', response.id);",
+									"    console.log('Course ID saved: ' + response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{instructorToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Python Programming Fundamentals\",\n  \"description\": \"Learn Python programming from scratch with hands-on examples\",\n  \"price\": 99.99,\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/courses/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Course by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses/{{courseId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								"{{courseId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Course 🆕",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{instructorToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Advanced Python Programming Fundamentals\",\n  \"description\": \"Learn Python programming from basics to advanced concepts with real-world projects\",\n  \"price\": 149.99,\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/courses/{{courseId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								"{{courseId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Instructor Courses 🆕",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses/instructor/{{instructorId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								"instructor",
+								"{{instructorId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Course",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{instructorToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/courses/{{courseId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								"{{courseId}}"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Lessons Management",
+			"item": [
+				{
+					"name": "Get All Lessons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/lessons/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lessons",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Lesson",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('lessonId', response.id);",
+									"    console.log('Lesson ID saved: ' + response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{instructorToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"course_id\": \"{{courseId}}\",\n  \"title\": \"Introduction to Python\",\n  \"content\": \"Welcome to Python programming! In this lesson, we'll cover the basics.\",\n  \"video_url\": \"\",\n  \"document_url\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/lessons/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lessons",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Lesson by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/lessons/{{lessonId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lessons",
+								"{{lessonId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Course Lessons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/lessons/course/{{courseId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lessons",
+								"course",
+								"{{courseId}}"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "6. Enrollments",
+			"item": [
+				{
+					"name": "Enroll in Course",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('enrollmentId', response.id);",
+									"    console.log('Enrollment ID saved: ' + response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{studentToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"course_id\": \"{{courseId}}\",\n  \"progress\": 0.0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/enrollments/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"enrollments",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get My Courses",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{studentToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/enrollments/my-courses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"enrollments",
+								"my-courses"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Progress",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{studentToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"progress\": 25.5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/enrollments/{{enrollmentId}}/progress",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"enrollments",
+								"{{enrollmentId}}",
+								"progress"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "7. Quizzes",
+			"item": [
+				{
+					"name": "Get All Quizzes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/quizzes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quizzes",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Quiz",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('quizId', response.id);",
+									"    console.log('Quiz ID saved: ' + response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{instructorToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"course_id\": \"{{courseId}}\",\n  \"lesson_id\": \"{{lessonId}}\",\n  \"questions\": [\n    {\n      \"question\": \"What is Python?\",\n      \"options\": [\"A programming language\", \"A snake\", \"A tool\", \"A framework\"],\n      \"answer\": \"A programming language\"\n    },\n    {\n      \"question\": \"Which of the following is a Python data type?\",\n      \"options\": [\"String\", \"Integer\", \"List\", \"All of the above\"],\n      \"answer\": \"All of the above\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/quizzes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quizzes",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Quiz by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/quizzes/{{quizId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quizzes",
+								"{{quizId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Submit Quiz",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{studentToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quiz_id\": \"{{quizId}}\",\n  \"answers\": [\"A programming language\", \"All of the above\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/quizzes/{{quizId}}/submit",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quizzes",
+								"{{quizId}}",
+								"submit"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Quiz Results",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{instructorToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/quizzes/{{quizId}}/results",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quizzes",
+								"{{quizId}}",
+								"results"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "8. Reviews",
+			"item": [
+				{
+					"name": "Add Review",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('reviewId', response.id);",
+									"    console.log('Review ID saved: ' + response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": \"{{studentId}}\",\n  \"course_id\": \"{{courseId}}\",\n  \"rating\": 5,\n  \"comment\": \"Excellent course! Very well structured and easy to follow.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/reviews/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reviews",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Course Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reviews/course/{{courseId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reviews",
+								"course",
+								"{{courseId}}"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "9. Notifications",
+			"item": [
+				{
+					"name": "Create Notification",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('notificationId', response.id);",
+									"    console.log('Notification ID saved: ' + response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": \"{{studentId}}\",\n  \"message\": \"New course available in your area of interest!\",\n  \"is_read\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/notifications/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get User Notifications",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/user/{{studentId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"user",
+								"{{studentId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Mark Notification as Read",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/{{notificationId}}/read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"{{notificationId}}",
+								"read"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "10. Payments",
+			"item": [
+				{
+					"name": "Get All Payments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payments/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('paymentId', response.id);",
+									"    console.log('Payment ID saved: ' + response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": \"{{studentId}}\",\n  \"course_id\": \"{{courseId}}\",\n  \"amount\": 99.99,\n  \"status\": \"completed\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Payment by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payments/{{paymentId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"{{paymentId}}"
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

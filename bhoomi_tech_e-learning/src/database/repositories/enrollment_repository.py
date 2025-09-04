@@ -12,6 +12,12 @@ class EnrollmentRepository:
     def find_by_user(user_id):
         return list(enrollments_collection.find({"user_id": user_id}))
     @staticmethod
+    def find_by_user_id(user_id):
+        return list(enrollments_collection.find({"user_id": ObjectId(user_id)}))
+    @staticmethod
+    def find_by_course_id(course_id):
+        return list(enrollments_collection.find({"course_id": ObjectId(course_id)}))
+    @staticmethod
     def find_by_user_and_course(user_id, course_id):
         return enrollments_collection.find_one({"user_id": user_id, "course_id": course_id})
     @staticmethod
